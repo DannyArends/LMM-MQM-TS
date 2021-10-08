@@ -134,8 +134,12 @@ LMMMQMts <- function(genotypes, phenotypes, covariates, map, markers = NULL, win
       cat("WARN: Marker: ", m, " is included. However, no evidence for inclusion (AIC=", round(diff(AIC(m0,m1)[,2]),2), ")\n", sep = "")
     }
   }
-  
-  ismissing.md <- which(apply(apply(markerData, 1, is.na),2,any))
+  #return(markerData)
+  if(length(markers) > 1) {
+    ismissing.md <- which(apply(apply(markerData, 1, is.na),2,any))
+  } else {
+    ismissing.md <- which(apply(markerData, 1, is.na))
+  }
   if(length(ismissing.md) > 0){
     cat("WARN: markers selected for MQM leads to removing ", length(ismissing.md), " observations from model (missing data)\n", sep = "")
   }
