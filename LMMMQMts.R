@@ -135,7 +135,7 @@ LMMMQMts <- function(genotypes, phenotypes, covariates, map, markers = NULL, win
     }
   }
   
-  ismissing.md <- which(apply(apply(markerData, 1, is.na),2,any))
+  ismissing.md <- which(apply(markerData, 1, function(x){any(is.na(x))}))
   if(length(ismissing.md) > 0){
     cat("WARN: markers selected for MQM leads to removing ", length(ismissing.md), " observations from model (missing data)\n", sep = "")
   }
@@ -198,6 +198,63 @@ LMMMQMts <- function(genotypes, phenotypes, covariates, map, markers = NULL, win
   return(-log10(pvalues))
 }
 
+
+plotEffects <- function(results, map){
+  chrs <- unique(map[,"chr"])
+  gap <- 80000000/1000000
+  map.sorted <- NULL
+  chr.lengths <- c()
+  chr.starts <- c(0)
+  chrmids <- c()
+  i <- 1
+  for(chr in chrs){
+    onChr <- which(map[,"chr"] == chr)
+    map.sorted <- rbind(map.sorted, map[onChr,])
+    chr.lengths <- c(chr.lengths, max(map[onChr, "pos"]))
+    chr.starts <- c(chr.starts, chr.starts[i] + max(map[onChr, "pos"]) + gap)
+    i <- i + 1
+  }
+
+  chr.start <- chr.starts[-1]
+  chr.ends <- chr.start + chr.lengths
+  names(chr.starts) <- chrs
+  names(chr.lengths) <- chrs
+
+  for (x in chrs){
+    chrmid <- as.numeric(chr.lengths[x]/2) + as.numeric(chr.starts[x])
+    chrmids <- c(chrmids, chrmid)
+  }  
+  plot(x = c(-gap, tail(chr.starts,1)), y = c(0,9), t = 'n', xlab="Chromosome", ylab="-log10[P]",xaxt='n', xaxs="i", yaxs="i", las=2, main=paste0("Effect profile"))
+  for(chr in chrs){
+    onChr <- rownames(map[map[,"chr"] == chr,])
+    allcurrent <- results[onChr, 1]
+    maincurrent <- results[onChr, 2]
+    timecurrent <- results[onChr, 3]
+    if (chr == "X"){
+      points(x=chr.starts[chr] + map[onChr,"pos"], y = allcurrent[onChr, 1], t ='p', pch = 16, cex = 1.5, col= "coral")
+	  #points(x=chr.starts[chr] + map[onChr,"pos"], y = maincurrent[onChr, 1], t ='p', pch = 16, cex = 1.5, col= "coral")
+	  #points(x=chr.starts[chr] + map[onChr,"pos"], y = timecurrent[onChr, 1], t ='p', pch = 16, cex = 1.5, col= "coral")
+	}
+    for (p in 1:length(allcurrent)){
+      pos <- chr.starts[chr] + map[onChr,"pos"]
+        if (chr %in% seq(1,20,2)){
+          points(x=pos[p], y = allcurrent[p], t ='p', pch = 18, cex = 1.2, col= "coral")
+		  #points(x=pos[p], y = maincurrent[p], t ='p', pch = 18, cex = 1.2, col= "coral")
+		  #points(x=pos[p], y = timecurrent[p], t ='p', pch = 18, cex = 1.2, col= "coral")
+        }else{
+		  points(x=pos[p], y = allcurrent[p], t ='p', pch = 18, cex = 1.2, col= "coral")
+		  #points(x=pos[p], y = maincurrent[p], t ='p', pch = 18, cex = 1.2, col= "coral")
+		  #points(x=pos[p], y = timecurrent[p], t ='p', pch = 18, cex = 1.2, col= "coral")
+      }
+	}
+  }
+  axis(1, chrs, at = chrmids)
+  abline(h = -log10(nrow(0.01/results)), col="green",lty=3)
+  abline(h = -log10(nrow(0.05/results)), col="black",lty=3)
+}
+
+
 ### Example using the BFMI x B6N AIL
 library(nlme)
+
 
