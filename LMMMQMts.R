@@ -234,19 +234,19 @@ plotEffects <- function(results, map){
       points(x=chr.starts[chr] + map[onChr,"pos"], y = allcurrent[onChr, 1], t ='p', pch = 16, cex = 1.5, col= "coral")
 	  #points(x=chr.starts[chr] + map[onChr,"pos"], y = maincurrent[onChr, 1], t ='p', pch = 16, cex = 1.5, col= "coral")
 	  #points(x=chr.starts[chr] + map[onChr,"pos"], y = timecurrent[onChr, 1], t ='p', pch = 16, cex = 1.5, col= "coral")
-	}
+    }
     for (p in 1:length(allcurrent)){
       pos <- chr.starts[chr] + map[onChr,"pos"]
         if (chr %in% seq(1,20,2)){
           points(x=pos[p], y = allcurrent[p], t ='p', pch = 18, cex = 1.2, col= "coral")
-		  #points(x=pos[p], y = maincurrent[p], t ='p', pch = 18, cex = 1.2, col= "coral")
-		  #points(x=pos[p], y = timecurrent[p], t ='p', pch = 18, cex = 1.2, col= "coral")
+          #points(x=pos[p], y = maincurrent[p], t ='p', pch = 18, cex = 1.2, col= "coral")
+          #points(x=pos[p], y = timecurrent[p], t ='p', pch = 18, cex = 1.2, col= "coral")
         }else{
-		  points(x=pos[p], y = allcurrent[p], t ='p', pch = 18, cex = 1.2, col= "coral")
-		  #points(x=pos[p], y = maincurrent[p], t ='p', pch = 18, cex = 1.2, col= "coral")
-		  #points(x=pos[p], y = timecurrent[p], t ='p', pch = 18, cex = 1.2, col= "coral")
+	  points(x=pos[p], y = allcurrent[p], t ='p', pch = 18, cex = 1.2, col= "coral")
+          #points(x=pos[p], y = maincurrent[p], t ='p', pch = 18, cex = 1.2, col= "coral")
+	  #points(x=pos[p], y = timecurrent[p], t ='p', pch = 18, cex = 1.2, col= "coral")
       }
-	}
+    }
   }
   axis(1, chrs, at = chrmids)
   abline(h = -log10(nrow(0.01/results)), col="green",lty=3)
