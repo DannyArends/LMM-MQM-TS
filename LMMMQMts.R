@@ -2,6 +2,7 @@
 # LMM-MQM timeseries analysis
 #
 
+library(nlme)
 
 # genotypes     MxN matrix (M = Markers, N = individuals)
 # phenotypes    NxT matrix (N = individuals, T = Timepoints), timepoints are dXX, where XX is the day
@@ -136,7 +137,6 @@ LMMMQMts <- function(genotypes, phenotypes, covariates, map, markers = NULL, win
   }
 
   ismissing.md <- which(apply(markerData, 1, function(x){any(is.na(x))}))
-
   if(length(ismissing.md) > 0){
     cat("WARN: markers selected for MQM leads to removing ", length(ismissing.md), " observations from model (missing data)\n", sep = "")
   }
@@ -199,6 +199,39 @@ LMMMQMts <- function(genotypes, phenotypes, covariates, map, markers = NULL, win
   return(-log10(pvalues))
 }
 
-### Example using the BFMI x B6N AIL
-library(nlme)
+plotEffects <- function(results, map, what = c("All", "Main", "Time"), gap = 10, pch = 20, cex=1, chr.col = c("coral", "blue")){
+  chrs <- unique(map[,"chr"])
+  map.sorted <- NULL
+  chr.lengths <- c()
+  chr.starts <- c(0)
+  chrmids <- c()
+  i <- 1
+  for (chr in chrs) {
+    onChr <- which(map[,"chr"] == chr)
+    map.sorted <- rbind(map.sorted, map[onChr,])
+    chr.lengths <- c(chr.lengths, max(map[onChr, "pos"]))
+    chr.starts <- c(chr.starts, chr.starts[i] + max(map[onChr, "pos"]) + gap)
+    i <- i + 1
+  }
 
+  chr.start <- chr.starts[-1]
+  chr.ends <- chr.start + chr.lengths
+  names(chr.starts) <- chrs
+  names(chr.lengths) <- chrs
+
+  for (x in chrs) {
+    chrmid <- as.numeric(chr.lengths[x]/2) + as.numeric(chr.starts[x])
+    chrmids <- c(chrmids, chrmid)
+  }  
+  plot(x = c(-gap, tail(chr.starts,1)), y = c(0, max(results,na.rm=TRUE) * 1.2), t = 'n', xlab="Chromosome", ylab="-log10[P]",xaxt='n', xaxs="i", yaxs="i", las=2, main=paste0("Effect profile"))
+
+  i <- 1
+  for (chr in chrs) {
+    onChr <- rownames(map[map[,"chr"] == chr,])
+    points(x=chr.starts[chr] + map[onChr,"pos"], y = results[onChr, what[1]], t ='p', pch = pch, cex = cex, col = chr.col[(i %% 2) + 1])
+    i <- i + 1
+  }
+  axis(1, chrs, at = chrmids)
+  abline(h = -log10(0.01/nrow(results)), col="green", lty=3)
+  abline(h = -log10(0.05/nrow(results)), col="orange", lty=3)
+}
