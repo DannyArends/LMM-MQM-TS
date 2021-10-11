@@ -199,6 +199,13 @@ LMMMQMts <- function(genotypes, phenotypes, covariates, map, markers = NULL, win
   return(-log10(pvalues))
 }
 
+# results:      The object returned by the LMMMQMts function
+# map:          Mx2 matrix (M = Markers, columns: chr, pos (Mb)
+# what:         What should we plot: All = full model results, Main = Main effects, Time = maker x time interaction
+# gap:          Gap size between chromosomes
+# pch:          Plot symbol
+# cex:          Plot symbol magnification
+# chr.col       Chromosome colors
 plotEffects <- function(results, map, what = c("All", "Main", "Time"), gap = 10, pch = 20, cex=1, chr.col = c("coral", "blue")){
   chrs <- unique(map[,"chr"])
   map.sorted <- NULL
