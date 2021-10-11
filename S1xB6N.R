@@ -1,8 +1,8 @@
 
-setwd("D:/LMMMQMts/")
+setwd("D:/Ddrive/LMM-MQM-TS/")
 source("LMMMQMts.R")
 
-setwd("D:/LMMMQMts/S1xB6N")
+setwd("D:/Ddrive/LMM-MQM-TS/S1xB6N")
 
 genotypes <- read.table("genotypes.txt", sep = "\t", check.names=FALSE, colClasses="character")
 phenotypes <- read.table("phenotypes.txt", sep = "\t")
