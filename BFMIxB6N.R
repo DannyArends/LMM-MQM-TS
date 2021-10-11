@@ -1,9 +1,8 @@
 
-setwd("D:/LMMMQMts/")
-
+setwd("D:/Ddrive/LMM-MQM-TS/")
 source("LMMMQMts.R")
 
-setwd("D:/LMMMQMts/BFMIxB6N")
+setwd("D:/Ddrive/LMM-MQM-TS/BFMIxB6N")
 
 genotypes <- read.table("genotypes.txt", sep = "\t", na.strings=c("", "NA", "-"), check.names=FALSE)
 phenotypes <- read.table("phenotypes.txt", sep = "\t")
@@ -11,7 +10,7 @@ covariates <- read.table("covariates.txt", sep = "\t")
 map <- read.table("map.txt", sep = "\t")
 
 # Marker we want to compensate for
-markers <- c("UNC5048297", "UNC010520877")
+markers <- c("UNC5048297")
 verbose <- TRUE
 mar.code <- c("N", "H", "B")
 window.size <- 5
